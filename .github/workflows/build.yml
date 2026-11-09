@@ -10,7 +10,11 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
     steps:
       - name: Checkout
@@ -22,18 +26,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: 12266719
-          accept-android-sdk-licenses: true
-
-      - name: Install Android SDK 36
+      - name: Verify Android SDK
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager --install \
-            "platforms;android-36" \
-            "build-tools;36.0.0"
+          echo "SDK: $ANDROID_HOME"
+          ls -la "$ANDROID_HOME"
+          echo "Installed platforms:"
+          ls "$ANDROID_HOME/platforms"
+          echo "Installed build tools:"
+          ls "$ANDROID_HOME/build-tools"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -41,7 +41,7 @@ jobs:
           gradle-version: '8.13'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
