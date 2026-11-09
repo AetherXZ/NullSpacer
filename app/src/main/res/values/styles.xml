@@ -1,0 +1,6 @@
+<resources>
+    <style name="NoDisplayTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowNoDisplay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+</resources>
